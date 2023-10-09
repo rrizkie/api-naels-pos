@@ -23,6 +23,7 @@ import { AuthGuard } from './auth/auth.guard';
       database: process.env.POSTGRES_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
+      ssl: true,
     }),
     UserModule,
     BranchModule,
