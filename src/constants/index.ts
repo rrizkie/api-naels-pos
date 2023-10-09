@@ -1,0 +1,18 @@
+export const BRANCH = {
+  TEBET: 'TEBET',
+  SANTA: 'SANTA',
+  LUBANG_BUAYA: 'LUBANG_BUAYA',
+  ALL_BRANCH: 'ALL_BRANCH',
+};
+
+export enum ROLE {
+  DEV = 'DEV',
+  OWNER = 'OWNER',
+  BRANCH_OWNER = 'BRANCH_OWNER',
+  NAIL_ARTIST = 'NAIL_ARTIST',
+}
+
+export enum TRANSACTION_STATUS {
+  UNPAID = 'UNPAID',
+  PAID = 'PAID',
+}
