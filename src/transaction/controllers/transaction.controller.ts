@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { TransactionService } from '../services/transaction.service';
 import {
   TransactionQuery,
@@ -16,14 +16,25 @@ export class TransactionController {
   }
 
   @Get()
-  findAll(@Query() query: TransactionQuery) {
-    return this.transactionService.findAllTransaction(query);
+  findAll(
+    @Query() query: TransactionQuery,
+    @Headers('authorization') authorization: string,
+  ) {
+    const token = authorization.split(' ')[1];
+    return this.transactionService.findAllTransaction(query, token);
   }
 
   @Get('summary')
-  findAllStats(@Query('branch') branch: BRANCH) {
+  findAllStats(
+    @Query('branch') branch: BRANCH,
+    @Headers('authorization') authorization: string,
+  ) {
     if (branch) {
-      return this.transactionService.findTransactionSummaryByBranch({ branch });
+      const token = authorization.split(' ')[1];
+      return this.transactionService.findTransactionSummaryByBranch(
+        { branch },
+        token,
+      );
     }
     return this.transactionService.findTransactionSummary();
   }

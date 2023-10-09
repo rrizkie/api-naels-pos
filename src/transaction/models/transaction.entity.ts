@@ -1,5 +1,10 @@
 import { BRANCH, TRANSACTION_STATUS } from 'src/constants';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('transaction')
 export class TransactionEntity {
@@ -24,15 +29,20 @@ export class TransactionEntity {
   @Column({ default: false })
   isDeleted: boolean;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt: Date;
+}
+
+export class CreateTransactionResponse {
+  message: string;
+  data: TransactionEntity;
 }
 
 export class TransactionQuery {
   branch?: BRANCH;
   artist?: string;
-  start_date?: string;
-  end_date?: string;
+  start_date?: Date | string;
+  end_date?: Date | string;
   page?: number;
   size?: number;
 }
