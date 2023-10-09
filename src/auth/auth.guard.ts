@@ -20,7 +20,9 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
 
-    if (request.originalUrl === '/api/user/login') {
+    const pathException = ['/api/user/login', '/api/user/validate'];
+
+    if (pathException.includes(request.originalUrl)) {
       return true;
     }
 

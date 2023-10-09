@@ -17,7 +17,11 @@ export class BranchService {
   }
 
   findAllBranch(): Observable<Branch[]> {
-    return from(this.branchRepository.find());
+    return from(
+      this.branchRepository.find({
+        where: { isActive: true, isDeleted: false },
+      }),
+    );
   }
 
   findBranch(id: number): Observable<Branch> {

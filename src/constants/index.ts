@@ -1,9 +1,9 @@
-export const BRANCH = {
-  TEBET: 'TEBET',
-  SANTA: 'SANTA',
-  LUBANG_BUAYA: 'LUBANG_BUAYA',
-  ALL_BRANCH: 'ALL_BRANCH',
-};
+export enum BRANCH {
+  TEBET = 'TEBET',
+  SANTA = 'SANTA',
+  LUBANG_BUAYA = 'LUBANG_BUAYA',
+  ALL_BRANCH = 'ALL_BRANCH',
+}
 
 export enum ROLE {
   DEV = 'DEV',
