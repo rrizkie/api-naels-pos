@@ -8,7 +8,7 @@ import {
 
 @Entity('transaction')
 export class TransactionEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column({ default: '' })
