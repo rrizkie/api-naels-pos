@@ -1,10 +1,19 @@
-import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { TransactionService } from '../services/transaction.service';
 import {
   TransactionQuery,
   TransactionEntity,
 } from '../models/transaction.entity';
 import { BRANCH } from 'src/constants';
+import { Response } from 'express';
 
 @Controller('transaction')
 export class TransactionController {
@@ -22,6 +31,22 @@ export class TransactionController {
   ) {
     const token = authorization.split(' ')[1];
     return this.transactionService.findAllTransaction(query, token);
+  }
+
+  @Get('export')
+  async export(
+    @Query() query: TransactionQuery,
+    @Headers('authorization') authorization: string,
+    @Res() res: Response,
+  ) {
+    const token = authorization.split(' ')[1];
+    const result = await this.transactionService.exportTransactions(
+      query,
+      token,
+    );
+    res.download(`${result}`);
+
+    return;
   }
 
   @Get('summary')

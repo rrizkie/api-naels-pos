@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   CreateTransactionResponse,
@@ -11,6 +11,7 @@ import {
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { BRANCH } from 'src/constants';
 import { JwtService } from '@nestjs/jwt';
+import { ExportService } from 'src/export/export.service';
 
 @Injectable()
 export class TransactionService {
@@ -18,6 +19,7 @@ export class TransactionService {
     @InjectRepository(TransactionEntity)
     private readonly transactionRepository: Repository<TransactionEntity>,
     private jwtService: JwtService,
+    private exportService: ExportService,
   ) {}
 
   async createTransaction(
@@ -69,6 +71,42 @@ export class TransactionService {
       data: result,
       total: count,
     };
+  }
+
+  async exportTransactions(
+    query: TransactionQuery,
+    token: string,
+  ): Promise<any> {
+    const userData = await this.jwtService.verifyAsync(token, {
+      secret: process.env.JWT_SECRET,
+    });
+
+    const { branch, artist, page = 1, size = 10, start_date, end_date } = query;
+
+    const result = await this.transactionRepository.find({
+      take: size,
+      skip: (page - 1) * size,
+      where: {
+        branch_name:
+          userData.branch !== BRANCH.ALL_BRANCH ? userData.branch : branch,
+        nail_artist: artist,
+        ...(start_date &&
+          end_date && {
+            createdAt:
+              MoreThanOrEqual(new Date(`${start_date} 00:00:00`)) &&
+              LessThanOrEqual(new Date(`${end_date} 23:59:59`)),
+          }),
+      },
+      order: { createdAt: 'DESC' },
+    });
+
+    if (result.length === 0) {
+      throw new BadRequestException();
+    }
+
+    const file = this.exportService.exportFile(result, 'Transactions');
+
+    return file;
   }
 
   async findTransactionSummary(): Promise<TransactionSummaryResponse> {
