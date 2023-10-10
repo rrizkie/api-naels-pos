@@ -47,9 +47,12 @@ export class TransactionService {
         branch_name:
           userData.branch !== BRANCH.ALL_BRANCH ? userData.branch : branch,
         nail_artist: artist,
-        createdAt:
-          MoreThanOrEqual(new Date(`${start_date} 00:00:00`)) &&
-          LessThanOrEqual(new Date(`${end_date} 23:59:59`)),
+        ...(start_date &&
+          end_date && {
+            createdAt:
+              MoreThanOrEqual(new Date(`${start_date} 00:00:00`)) &&
+              LessThanOrEqual(new Date(`${end_date} 23:59:59`)),
+          }),
       },
       order: { createdAt: 'DESC' },
     });
