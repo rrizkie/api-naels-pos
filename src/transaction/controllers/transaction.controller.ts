@@ -14,14 +14,36 @@ import {
 } from '../models/transaction.entity';
 import { BRANCH } from 'src/constants';
 import { Response } from 'express';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const midtransClient = require('midtrans-client');
 
 @Controller('transaction')
 export class TransactionController {
   constructor(private transactionService: TransactionService) {}
 
   @Post()
-  create(@Body() transaction: TransactionEntity) {
-    return this.transactionService.createTransaction(transaction);
+  async create(@Body() transaction: TransactionEntity) {
+    const result = await this.transactionService.createTransaction(transaction);
+
+    const snap = new midtransClient.Snap({
+      isProduction: process.env.APP_ENV === 'prod',
+      serverKey: process.env.MIDTRANS_SERVER_KEY,
+    });
+
+    const parameter = {
+      transaction_details: {
+        order_id: result.id,
+        gross_amount: result.total_price,
+      },
+    };
+
+    const { token } = await snap.createTransaction(parameter);
+
+    return {
+      message: 'Success',
+      data: result,
+      token,
+    };
   }
 
   @Get()
@@ -40,6 +62,7 @@ export class TransactionController {
     @Res() res: Response,
   ) {
     const token = authorization.split(' ')[1];
+
     const result = await this.transactionService.exportTransactions(
       query,
       token,

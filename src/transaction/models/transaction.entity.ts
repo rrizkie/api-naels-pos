@@ -1,35 +1,27 @@
 import { BRANCH, TRANSACTION_STATUS } from 'src/constants';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('transaction')
 export class TransactionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column({ default: '' })
+  @Column({ default: '', enum: BRANCH, nullable: false })
   branch_name: string;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, nullable: false })
   total_price: number;
 
-  @Column({ default: 0 })
-  nail_artist_id: number;
-
-  @Column({ default: '' })
+  @Column({ default: '', nullable: false })
   nail_artist: string;
 
-  @Column({ default: TRANSACTION_STATUS.UNPAID })
+  @Column({ default: TRANSACTION_STATUS.UNPAID, enum: TRANSACTION_STATUS })
   status: string;
 
   @Column({ default: false })
   isDeleted: boolean;
 
-  @CreateDateColumn()
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 }
 
