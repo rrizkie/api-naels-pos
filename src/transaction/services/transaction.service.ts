@@ -12,6 +12,8 @@ import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { BRANCH } from 'src/constants';
 import { JwtService } from '@nestjs/jwt';
 import { ExportService } from 'src/export/export.service';
+import { currencyFormatter } from 'src/utils/currency';
+import { format } from 'date-fns';
 
 @Injectable()
 export class TransactionService {
@@ -104,7 +106,15 @@ export class TransactionService {
       throw new BadRequestException();
     }
 
-    const file = this.exportService.exportFile(result, 'Transactions');
+    const adjustedResult = result.map((res: TransactionEntity) => ({
+      id: res.id,
+      branch: res.branch_name.replace('_', ' '),
+      nail_artist: res.nail_artist,
+      total_price: currencyFormatter.format(res.total_price),
+      transaction_date: format(res.createdAt, 'd MMM yyyy'),
+    }));
+
+    const file = this.exportService.exportFile(adjustedResult, 'Transactions');
 
     return file;
   }

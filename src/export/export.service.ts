@@ -17,7 +17,10 @@ export class ExportService {
 
     const sheet = book.addWorksheet('sheet1');
 
-    rows.unshift(Object.keys(data[0]));
+    const header = Object.keys(data[0]).map((el) =>
+      el.replace('_', ' ').toUpperCase(),
+    );
+    rows.unshift(header);
 
     sheet.addRows(rows);
 
