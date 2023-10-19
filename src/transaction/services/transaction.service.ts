@@ -8,7 +8,7 @@ import {
   TransactionSummaryResponse,
 } from '../models/transaction.entity';
 import { Between, Repository } from 'typeorm';
-import { BRANCH } from 'src/constants';
+import { BRANCH, TRANSACTION_STATUS } from 'src/constants';
 import { JwtService } from '@nestjs/jwt';
 import { ExportService } from 'src/export/export.service';
 import { currencyFormatter } from 'src/utils/currency';
@@ -127,18 +127,24 @@ export class TransactionService {
   }
 
   async findTransactionSummary(): Promise<TransactionSummaryResponse> {
-    const all_branch = await this.transactionRepository.sum('total_price');
+    const all_branch = await this.transactionRepository.sum('total_price', {
+      status: TRANSACTION_STATUS.PAID,
+      isDeleted: false,
+    });
     const tebet = await this.transactionRepository.sum('total_price', {
       branch_name: BRANCH.TEBET,
       isDeleted: false,
+      status: TRANSACTION_STATUS.PAID,
     });
     const santa = await this.transactionRepository.sum('total_price', {
       branch_name: BRANCH.SANTA,
       isDeleted: false,
+      status: TRANSACTION_STATUS.PAID,
     });
     const lubang_buaya = await this.transactionRepository.sum('total_price', {
       branch_name: BRANCH.LUBANG_BUAYA,
       isDeleted: false,
+      status: TRANSACTION_STATUS.PAID,
     });
     return {
       data: [
@@ -173,6 +179,7 @@ export class TransactionService {
         branch_name:
           userData.branch !== BRANCH.ALL_BRANCH ? userData.branch : branch,
         isDeleted: false,
+        status: TRANSACTION_STATUS.PAID,
       },
     );
     return {

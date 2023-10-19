@@ -1,10 +1,15 @@
+import { BranchEntity } from 'src/branch/models/branch.entity';
+import { Branch } from 'src/branch/models/branch.interface';
 import { BRANCH, TRANSACTION_STATUS } from 'src/constants';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('transaction')
 export class TransactionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: number;
+
+  @OneToOne(() => BranchEntity, (branch) => branch.name)
+  branch: Branch;
 
   @Column({ default: '', enum: BRANCH, nullable: false })
   branch_name: string;

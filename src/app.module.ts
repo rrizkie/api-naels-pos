@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { RoleGuard } from './role/role.guard';
 import { AuthGuard } from './auth/auth.guard';
+import { PromotionModule } from './promotion/promotion.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AuthGuard } from './auth/auth.guard';
     RoleModule,
     ItemModule,
     TransactionModule,
+    PromotionModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
