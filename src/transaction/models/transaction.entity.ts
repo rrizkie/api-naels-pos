@@ -1,15 +1,10 @@
-import { BranchEntity } from 'src/branch/models/branch.entity';
-import { Branch } from 'src/branch/models/branch.interface';
 import { BRANCH, TRANSACTION_STATUS } from 'src/constants';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('transaction')
 export class TransactionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: number;
-
-  @OneToOne(() => BranchEntity, (branch) => branch.name)
-  branch: Branch;
 
   @Column({ default: '', enum: BRANCH, nullable: false })
   branch_name: string;
@@ -19,6 +14,12 @@ export class TransactionEntity {
 
   @Column({ default: '', nullable: false })
   nail_artist: string;
+
+  @Column({ default: '', nullable: true })
+  promotion_name: string;
+
+  @Column({ default: 0, nullable: true })
+  promotion_value: number;
 
   @Column({ default: TRANSACTION_STATUS.UNPAID, enum: TRANSACTION_STATUS })
   status: string;
