@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PromotionService } from './services/item.service';
+import { PromotionService } from './services/promotion.service';
 import { PromotionController } from './controllers/promotion.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PromotionEntity } from './models/promotion.entity';

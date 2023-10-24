@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { Promotion } from '../models/promotion.interface';
 import { Roles } from 'src/role/role.decorator';
 import { ROLE } from 'src/constants';
-import { PromotionService } from '../services/item.service';
+import { PromotionService } from '../services/promotion.service';
 
 @Controller('promotion')
 export class PromotionController {
@@ -15,8 +24,12 @@ export class PromotionController {
   }
 
   @Get()
-  findAll() {
-    return this.promotionService.findAllItem();
+  findAll(
+    @Query() query: { isActive: boolean },
+    @Headers('authorization') authorization: string,
+  ) {
+    const token = authorization.split(' ')[1];
+    return this.promotionService.findAllItem(query, token);
   }
 
   @Get(':id')

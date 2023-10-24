@@ -1,3 +1,4 @@
+import { BRANCH } from 'src/constants';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('promotion')
@@ -22,4 +23,16 @@ export class PromotionEntity {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
+}
+
+export class PromotionQuery {
+  branch?: BRANCH;
+  isActive?: boolean;
+  page?: number;
+  size?: number;
+}
+
+export class PromotionResponse {
+  data: PromotionEntity[];
+  total: number;
 }
