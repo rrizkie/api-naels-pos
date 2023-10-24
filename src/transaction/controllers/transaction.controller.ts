@@ -33,7 +33,7 @@ export class TransactionController {
     const parameter = {
       transaction_details: {
         order_id: result.id,
-        gross_amount: result.total_price,
+        gross_amount: result.total_transaction - result.downpayment,
       },
     };
 

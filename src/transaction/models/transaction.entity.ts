@@ -9,9 +9,6 @@ export class TransactionEntity {
   @Column({ default: '', enum: BRANCH, nullable: false })
   branch_name: string;
 
-  @Column({ default: 0, nullable: false })
-  total_price: number;
-
   @Column({ default: '', nullable: false })
   nail_artist: string;
 
@@ -20,6 +17,15 @@ export class TransactionEntity {
 
   @Column({ default: 0, nullable: true })
   promotion_value: number;
+
+  @Column({ default: 0, nullable: true })
+  downpayment: number;
+
+  @Column({ default: 0, nullable: true })
+  total_discount: number;
+
+  @Column({ default: 0, nullable: false })
+  total_transaction: number;
 
   @Column({ default: TRANSACTION_STATUS.UNPAID, enum: TRANSACTION_STATUS })
   status: string;

@@ -117,7 +117,7 @@ export class TransactionService {
       id: res.id,
       branch: res.branch_name.replace('_', ' '),
       nail_artist: res.nail_artist,
-      total_price: currencyFormatter.format(res.total_price),
+      total_transaction: currencyFormatter.format(res.total_transaction),
       transaction_date: format(res.createdAt, 'd MMM yyyy'),
     }));
 
@@ -127,25 +127,31 @@ export class TransactionService {
   }
 
   async findTransactionSummary(): Promise<TransactionSummaryResponse> {
-    const all_branch = await this.transactionRepository.sum('total_price', {
-      status: TRANSACTION_STATUS.PAID,
-      isDeleted: false,
-    });
-    const tebet = await this.transactionRepository.sum('total_price', {
+    const all_branch = await this.transactionRepository.sum(
+      'total_transaction',
+      {
+        status: TRANSACTION_STATUS.PAID,
+        isDeleted: false,
+      },
+    );
+    const tebet = await this.transactionRepository.sum('total_transaction', {
       branch_name: BRANCH.TEBET,
       isDeleted: false,
       status: TRANSACTION_STATUS.PAID,
     });
-    const santa = await this.transactionRepository.sum('total_price', {
+    const santa = await this.transactionRepository.sum('total_transaction', {
       branch_name: BRANCH.SANTA,
       isDeleted: false,
       status: TRANSACTION_STATUS.PAID,
     });
-    const lubang_buaya = await this.transactionRepository.sum('total_price', {
-      branch_name: BRANCH.LUBANG_BUAYA,
-      isDeleted: false,
-      status: TRANSACTION_STATUS.PAID,
-    });
+    const lubang_buaya = await this.transactionRepository.sum(
+      'total_transaction',
+      {
+        branch_name: BRANCH.LUBANG_BUAYA,
+        isDeleted: false,
+        status: TRANSACTION_STATUS.PAID,
+      },
+    );
     return {
       data: [
         {
@@ -174,7 +180,7 @@ export class TransactionService {
     });
 
     const total_transaction = await this.transactionRepository.sum(
-      'total_price',
+      'total_transaction',
       {
         branch_name:
           userData.branch !== BRANCH.ALL_BRANCH ? userData.branch : branch,

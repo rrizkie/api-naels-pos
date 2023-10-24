@@ -31,15 +31,17 @@ export class PromotionService {
       secret: process.env.JWT_SECRET,
     });
 
-    const { isActive, page = 1, size = 10 } = query;
+    const { branch, isActive, page = 1, size = 10 } = query;
     const result = await this.promotionRepository.find({
       take: size,
       skip: (page - 1) * size,
       where: {
         ...(isActive && { isActive }),
-        ...(userData.branch !== BRANCH.ALL_BRANCH && {
-          branch: userData.branch,
-        }),
+        ...(branch && { branch }),
+        ...(!branch &&
+          userData.branch !== BRANCH.ALL_BRANCH && {
+            branch: userData.branch,
+          }),
       },
       order: { createdAt: 'DESC' },
     });
